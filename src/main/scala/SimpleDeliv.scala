@@ -66,7 +66,7 @@ class Node extends Actor {
 
 }
 
-object SimpleDeliv extends App {
+object SimpleDeliv {
   //Creating actor system
   val system : ActorSystem = ActorSystem("system")
 
@@ -84,14 +84,25 @@ object SimpleDeliv extends App {
   */
   Relations.relations = immutable.HashMap(("A", List(B, C)), ("B", List(A, C)), ("C", List(A, B)))
 
-  //The logs are initially empty
-  Logs.logs = immutable.HashMap[String, mutable.Set[Log]]()
 
-  //Start Simulation
-  A ! Start(Broadcast("Some payload"))
+  def main(args: Array[String]): Unit = {
+    if(args.nonEmpty){
+      verifyPostWithoutAssert()
+    }
+    else{
+      //The logs are initially empty
+      Logs.logs = immutable.HashMap[String, mutable.Set[Log]]()
 
-  //TODO: The time duration is arbitrary and needs to be changed to something more deterministic.
-  Await.ready(system.whenTerminated, Duration(5, TimeUnit.SECONDS))
+      //Start Simulation
+      A ! Start(Broadcast("Some payload"))
+
+      //TODO: The time duration is arbitrary and needs to be changed to something more deterministic.
+      Await.ready(system.whenTerminated, Duration(5, TimeUnit.SECONDS))
+    }
+
+  }
+
+
 
 
   //This is just hard-coded correct for now as it complicates things.
