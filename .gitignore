@@ -1,6 +1,7 @@
 *.log
 *.txt
 
+ldfi-akka
 
 #sbt
 .cache
