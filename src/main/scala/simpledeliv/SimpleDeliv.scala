@@ -1,3 +1,4 @@
+package simpledeliv
 
 import java.util.concurrent.TimeUnit
 import akka.actor._
@@ -66,7 +67,7 @@ class Node extends Actor {
 
 }
 
-object SimpleDeliv {
+class SimpleDeliv {
   //Creating actor system
   val system : ActorSystem = ActorSystem("system")
 
@@ -84,22 +85,16 @@ object SimpleDeliv {
   */
   Relations.relations = immutable.HashMap(("A", List(B, C)), ("B", List(A, C)), ("C", List(A, B)))
 
+  //The logs are initially empty
+  Logs.logs = immutable.HashMap[String, mutable.Set[Log]]()
 
-  def main(args: Array[String]): Unit = {
-    if(args.nonEmpty){
-      verifyPostWithoutAssert()
-    }
-    else{
-      //The logs are initially empty
-      Logs.logs = immutable.HashMap[String, mutable.Set[Log]]()
+  def run(): Unit = {
 
-      //Start Simulation
-      A ! Start(Broadcast("Some payload"))
+    //Start Simulation
+    A ! Start(Broadcast("Some payload"))
 
-      //TODO: The time duration is arbitrary and needs to be changed to something more deterministic.
-      Await.ready(system.whenTerminated, Duration(5, TimeUnit.SECONDS))
-    }
-
+    //TODO: The time duration is arbitrary and needs to be changed to something more deterministic.
+    Await.ready(system.whenTerminated, Duration(5, TimeUnit.SECONDS))
   }
 
 
@@ -182,4 +177,3 @@ object SimpleDeliv {
 
 
 }
-
