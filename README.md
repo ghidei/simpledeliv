@@ -17,15 +17,18 @@
 		mainClass in Compile := Some("ldfi.akka.Main"))
 	.dependsOn(global)
 	```
+4. Compile project
 
-4. Rewrite branch 
+	`sbt compile`
 
-	`sbt "ldfiakka/runMain ldfi.akka.Main --rewrite"`
+5. Rewrite branch 
 
-5. Compile ldfi-akka
+	`sbt "ldfiakka/runMain ldfi.akka.Main --rewrite -d src/main/scala"`
+
+6. Compile ldfi-akka
 	
 	`(cd ldfi-akka; sbt compile)`
 
-6. Run ldfi-akka
+7. Run ldfi-akka
 
 	`sbt "ldfiakka/runMain ldfi.akka.Main -m src/main/scala/simpledeliv/Main.scala -v src/main/scala/simpledeliv/SimpleDeliv.scala verifyPostWithoutAssert"`
