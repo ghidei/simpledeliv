@@ -28,4 +28,4 @@
 
 6. Run ldfi-akka
 
-	`sbt "ldfiakka/runMain ldfi.akka.Main -m <path_to_main_class> -v <path_to_verify_class> <name_of_verify_method>"`
+	`sbt "ldfiakka/runMain ldfi.akka.Main -m src/main/scala/simpledeliv/Main.scala -v src/main/scala/simpledeliv/SimpleDeliv.scala verifyPostWithoutAssert"`
