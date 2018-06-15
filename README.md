@@ -22,7 +22,7 @@
 
 	`sbt "ldfiakka/runMain ldfi.akka.Main --rewrite"`
 
-5. Compile branch
+5. Compile ldfi-akka
 	
 	`(cd ldfi-akka; sbt compile)`
 
