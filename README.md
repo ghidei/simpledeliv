@@ -21,14 +21,22 @@
 
 	`sbt compile`
 
-5. Rewrite branch 
+5. Copy code in to ldfi-akka
 
-	`sbt "ldfiakka/runMain ldfi.akka.Main --rewrite -d src/main/scala"`
+	`sbt "ldfiakka/runMain ldfi.akka.Main --copy src/main/scala"`
+
+6. Compile ldfi-akka
+
+	`(cd ldfi-akka; sbt compile)`
+
+7. Rewrite code 
+
+	`sbt "ldfiakka/runMain ldfi.akka.Main --rewrite"`
 
 6. Compile ldfi-akka
 	
 	`(cd ldfi-akka; sbt compile)`
 
-7. Run ldfi-akka
+9. Run ldfi-akka
 
 	`sbt "ldfiakka/runMain ldfi.akka.Main -m src/main/scala/simpledeliv/Main.scala -v src/main/scala/simpledeliv/SimpleDeliv.scala verifyPostWithoutAssert"`
