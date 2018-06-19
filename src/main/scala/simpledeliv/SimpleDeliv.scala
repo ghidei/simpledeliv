@@ -6,19 +6,20 @@ import scala.collection.{mutable, _}
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
+
 case class Start(bcast: Broadcast)
 case class Broadcast(pload: String)
 case class Log(pload: String)
 
 //The global neighbor map of all nodes
 object Relations {
-  var relations: immutable.HashMap[String, List[ActorRef]] = immutable.HashMap[String, List[ActorRef]]()
+  var relations: Map[String, List[ActorRef]] = Map.empty
 }
 
 //Global logs
 object Logs {
   //Hashmap is mutable, but no risk of race-condition because each actor only mutate its own logs.
-  var logs : immutable.HashMap[String, mutable.Set[Log]] = immutable.HashMap[String, mutable.Set[Log]]()
+  var logs : Map[String, mutable.Set[Log]] = Map.empty
 }
 
 //Propsfactory. Do not have any constructor parameters for now, but still best practice.
@@ -27,9 +28,9 @@ object Node {
 }
 
 class Node extends Actor {
-  val name  : String = self.path.name
+  val name : String = self.path.name
 
-  def receive : Receive  = {
+  def receive : Receive = {
     case Broadcast(pload) =>
       //Log the payload in global logs
       logBroadcast(pload)
@@ -77,28 +78,24 @@ class SimpleDeliv {
   val C : ActorRef = system.actorOf(Node.props, "C")
 
   //Creating an immutable neighboring list. No neighbors can be added dynamically for now.
-  val actors = List(A, B, C)
+  val actors : List[ActorRef] = List(A, B, C)
 
   /*
    Adding relations. All nodes are neighbors to each other.
    **Not using Akka's Broadcast method because I want to have control over which nodes can communicate.**
   */
-  Relations.relations = immutable.HashMap(("A", List(B, C)), ("B", List(A, C)), ("C", List(A, B)))
+  Relations.relations = Map(("A", List(B, C)), ("B", List(A, C)), ("C", List(A, B)))
 
   //The logs are initially empty
-  Logs.logs = immutable.HashMap[String, mutable.Set[Log]]()
+  Logs.logs = Map.empty
 
   def run(): Unit = {
-
     //Start Simulation
     A ! Start(Broadcast("Some payload"))
 
     //TODO: The time duration is arbitrary and needs to be changed to something more deterministic.
     Await.ready(system.whenTerminated, Duration(5, TimeUnit.SECONDS))
   }
-
-
-
 
   //This is just hard-coded correct for now as it complicates things.
   //Verifying the pre-condition. Basically if a log exists for a node, then that node is not crashed.
