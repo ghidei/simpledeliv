@@ -1,13 +1,12 @@
 package simpledeliv
 
+object Main extends App {
 
-object Main {
+  val simpleDeliv = new SimpleDeliv
+  simpleDeliv.run()
 
-  def main(args: Array[String]): Unit = {
-
-    val simpleDeliv = new SimpleDeliv
-    simpleDeliv.run()
+  def verifyCorrectness(): Boolean = {
+    simpleDeliv.verifyPostWithoutAssert()
   }
 
 }
-
