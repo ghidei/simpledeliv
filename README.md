@@ -39,4 +39,4 @@
 
 9. Run ldfi-akka
 
-	`sbt "ldfiakka/runMain ldfi.akka.Main -m src/main/scala/simpledeliv/Main.scala -v src/main/scala/simpledeliv/SimpleDeliv.scala verifyPostWithoutAssert"`
+	`sbt "ldfiakka/runMain ldfi.akka.Main -m src/main/scala/simpledeliv/Main.scala -v src/main/scala/simpledeliv/Main.scala verifyCorrectness"`
