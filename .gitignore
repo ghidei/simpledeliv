@@ -1,5 +1,6 @@
 *.log
 *.txt
+!freePassMessages.txt
 
 ldfi-akka
 
