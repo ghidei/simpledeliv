@@ -110,67 +110,56 @@ class SimpleDeliv {
       true
     }
   }
+
   //Verifying the post-condition. Namely that if a log exists for a given node, then it exists for all its neighbors
   def verifyPost(): Unit = {
     println("\n\nVerifying the correctness of the run:")
-    for(actor <- actors) {
+    for (actor <- actors) {
       val node = actor.path.name
       Logs.logs.get(node) match {
         //This is an O(n^2) naive algorithm that can be improved a lot since all relations are transitive.
         //For instance, if I've already checked that B has logged everything that A has, then there is no need to check
         //that A has logged everything B has etc. Low priority.
-        case Some(logs: mutable.Set[Log]) => logs.foreach(log => verifyNotMissingLog(log.pload, node));
+        case Some(logs) => logs.foreach(log => verifyNotMissingLog(log.pload, node))
         case None => //Do nothing
       }
     }
+
     def verifyNotMissingLog(pload: String, node: String): Unit = {
       println
     } ensuring (!missing_log(pload, node))
   }
 
-
   def verifyPostWithoutAssert(): Boolean = {
-    var res = true
-    for(actor <- actors) {
+    actors.map { actor =>
       val node = actor.path.name
       Logs.logs.get(node) match {
         //This is an O(n^2) naive algorithm that can be improved a lot since all relations are transitive.
         //For instance, if I've already checked that B has logged everything that A has, then there is no need to check
         //that A has logged everything B has etc. Low priority.
-        case Some(logs: mutable.Set[Log]) =>
-          for (log <- logs){
-            println()
-            if(missing_log(log.pload, node))
-              res = false
-          }
-        case None => //Do nothing
+        case Some(logs) =>
+          logs.map { log =>
+            missing_log(log.pload, node)
+          }.exists(b => !b)
+        case None => false
       }
-    }
-    res
+    }.exists(b => b)
   }
 
   def missing_log(pload: String, node: String): Boolean = {
-    var missing = false
     Relations.relations.get(node) match {
-      case Some(neighbors: List[ActorRef]) =>
-        for (neigh <- neighbors) {
+      case Some(neighbors) =>
+        neighbors.map { neigh =>
           Logs.logs.get(neigh.path.name) match {
-            case Some(logs: mutable.Set[Log]) =>
-              //Log exists on some node and is not logged by its neighbor. Violation of post-condition.
-              if (!logs.contains(Log(pload))) missing = true
-              //Log is found. In agreement with post-condition.
-              else println("I found the corresponding log: \"" + pload + "\" for " + node + "'s neighbor: " + neigh.path.name)
-            case None =>
-              //Violation of the post-condition, since no logs at all are found.
-              missing = true
-              println("Didn't find any logs for " + node + "'s neighbor: " + neigh.path.name)
+            //Log exists on some node and is not logged by its neighbor. Violation of post-condition.
+            case Some(logs) => !logs.contains(Log(pload))
+            //Violation of the post-condition, since no logs at all are found.
+            case None => true
           }
-        }
+        }.exists(b => b)
       //If no neighbors, then we are not violating the post-condition.
-      case None => println("Didn't find any neighbors for: " + node)
+      case None => println("Didn't find any neighbors for: " + node); false
     }
-    missing
   }
-
 
 }
